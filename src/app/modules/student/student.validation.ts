@@ -1,74 +1,57 @@
-import Joi from "joi";
+import { z } from 'zod';
+import validator from 'validator';
 
-// Define the UserName schema
-const userNameSchema = Joi.object({
-    firstName: Joi.string()
-        .trim()
-        .required()
-        .max(20)
-        .custom((value, helpers) => {
+// Define UserName schema
+const userNameSchema = z.object({
+    firstName: z.string()
+        .max(20, "First name can't be more than 20 characters")
+        .refine((value) => {
             const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-            if (value !== firstNameStr) {
-                return helpers.error(`${value} is not in capitalized format. The first letter must be uppercase and the rest must be lowercase.`);
-            }
-            return value;
-        }),
-    middleName: Joi.string().optional(),
-    lastName: Joi.string()
-        .required()
-        .custom((value, helpers) => {
-            if (!/^[A-Za-z]+$/.test(value)) {
-                return helpers.error(`${value} is not in alphabetic format.`);
-            }
-            return value;
-        }),
+            return value === firstNameStr;
+        }, { message: "First name must be capitalized (first letter uppercase and the rest lowercase)" }),
+    middleName: z.string().optional().transform((val) => val ?? ""), // Transform undefined to empty string
+    lastName: z.string()
+        .refine((value) => validator.isAlpha(value), { message: "Last name must contain only alphabetic characters" }),
 });
 
-// Define the Guardian schema
-const guardianSchema = Joi.object({
-    fatherName: Joi.string().required(),
-    fatherOccupation: Joi.string().required(),
-    fatherContactNo: Joi.string().required(),
-    motherName: Joi.string().required(),
-    motherOccupation: Joi.string().required(),
-    motherContactNo: Joi.string().required(),
+// Define Guardian schema
+const guardianSchema = z.object({
+    fatherName: z.string().min(1, { message: "Father Name is required" }),
+    fatherOccupation: z.string().min(1, { message: "Father Occupation is required" }),
+    fatherContactNo: z.string().min(1, { message: "Father Contact Number is required" }),
+    motherName: z.string().min(1, { message: "Mother Name is required" }),
+    motherOccupation: z.string().min(1, { message: "Mother Occupation is required" }),
+    motherContactNo: z.string().min(1, { message: "Mother Contact Number is required" }),
 });
 
-// Define the LocalGuardian schema
-const localGuardianSchema = Joi.object({
-    name: Joi.string().required(),
-    occupation: Joi.string().required(),
-    contactNo: Joi.string().required(),
-    address: Joi.string().required(),
+// Define LocalGuardian schema
+const localGuardianSchema = z.object({
+    name: z.string().min(1, { message: "Local Guardian Name is required" }),
+    occupation: z.string().min(1, { message: "Local Guardian Occupation is required" }),
+    contactNo: z.string().min(1, { message: "Local Guardian Contact Number is required" }),
+    address: z.string().min(1, { message: "Local Guardian Address is required" }),
 });
 
-// Define the Student schema
-const studentValidationSchema = Joi.object({
-    id: Joi.string().required(),
-    name: userNameSchema.required(),
-    gender: Joi.string()
-        .valid('male', 'female')
-        .required()
-        .messages({ 'any.only': '{#label} is not valid' }),
-    dateOfBirth: Joi.string().optional(),
-    email: Joi.string()
-        .email()
-        .required()
-        .messages({ 'string.email': '{#value} is not a valid email.' }),
-    contactNo: Joi.string().required(),
-    emergencyContactNo: Joi.string().required(),
-    bloodGroup: Joi.string()
-        .valid('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-')
-        .optional(),
-    presentAddress: Joi.string().required(),
-    permanentAddress: Joi.string().required(),
-    guardian: guardianSchema.required(),
-    localGuardian: localGuardianSchema.required(),
-    profileImg: Joi.string().optional(),
-    isActive: Joi.string()
-        .valid('active', 'blocked')
-        .default('active'),
+// Define the main Student schema
+const studentValidationSchema = z.object({
+    id: z.string().min(1, { message: "Student ID is required" }),
+    name: userNameSchema,
+    gender: z.enum(['male', 'female'], { required_error: "Gender is required" }),
+    dateOfBirth: z.string().optional(),
+    email: z.string()
+        .email("Invalid email format")
+        .min(1, { message: "Email is required" }),
+    contactNo: z.string().min(1, { message: "Contact Number is required" }),
+    emergencyContactNo: z.string().min(1, { message: "Emergency Contact Number is required" }),
+    bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).optional(),
+    presentAddress: z.string().min(1, { message: "Present Address is required" }),
+    permanentAddress: z.string().min(1, { message: "Permanent Address is required" }),
+    guardian: guardianSchema,
+    localGuardian: localGuardianSchema,
+    profileImg: z.string().optional(),
+    isActive: z.enum(['active', 'blocked']).default("active"),
 });
 
+// export const validateStudent = (data: unknown) => studentValidationSchema.parse(data);
 
-export default studentValidationSchema;
+export default studentValidationSchema

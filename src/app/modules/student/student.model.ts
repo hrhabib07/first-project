@@ -115,6 +115,10 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     enum: ['active', 'blocked'],
     default: "active",
   },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // pre save middleware / hook : will work on create() save
@@ -125,6 +129,11 @@ studentSchema.pre('save', function () {
 // post save middleware
 studentSchema.post("save", function () {
   console.log(this, "post hook: we saved our data ");
+})
+
+// query middleware 
+studentSchema.pre("find", function (next) {
+  console.log(this);
 })
 
 

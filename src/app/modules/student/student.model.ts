@@ -8,6 +8,7 @@ import {
   TStudent,
   StudentModel
 } from './student.interface';
+import { func } from 'joi';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -115,6 +116,17 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     default: "active",
   },
 });
+
+// pre save middleware / hook : will work on create() save
+studentSchema.pre('save', function () {
+  console.log(this, "pre hook: we will save the data ");
+})
+
+// post save middleware
+studentSchema.post("save", function () {
+  console.log(this, "post hook: we saved our data ");
+})
+
 
 // creating a static method
 studentSchema.statics.isUserExist = async function (id: string) {

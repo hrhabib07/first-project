@@ -5,8 +5,6 @@ import studentValidationSchema from './student.validation';
 const createStudent = async (req: Request, res: Response) => {
   try {
     //creating a schema validation using zod
-
-
     // const { error, value } = studentValidationSchema.validate(studentData);
     // // console.log({ error }, { value });
     // if (error) {
@@ -28,10 +26,10 @@ const createStudent = async (req: Request, res: Response) => {
       message: 'Student is created successfully',
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
+      message: error.message || 'Something went wrong',
       error: error,
     });
   }

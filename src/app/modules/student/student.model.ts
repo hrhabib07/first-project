@@ -128,12 +128,13 @@ studentSchema.pre('save', function () {
 
 // post save middleware
 studentSchema.post("save", function () {
-  console.log(this, "post hook: we saved our data ");
+  // console.log(this, "post hook: we saved our data ");
 })
 
 // query middleware 
 studentSchema.pre("find", function (next) {
-  console.log(this);
+  // console.log(this);
+  next()
 })
 
 

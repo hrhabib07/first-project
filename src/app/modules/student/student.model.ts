@@ -90,7 +90,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     enum: { values: ['male', 'female'], message: "{VALUE} is not valid" },
     required: true
   },
-  dateOfBirth: String,
+  dateOfBirth: Date,
   email: {
     type: String, required: true, unique: true, validate:
     {

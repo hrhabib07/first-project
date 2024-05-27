@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { userServices } from "./user.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
-const createUser = async (req: Request, res: Response, next: NextFunction) => {
+const createUser: RequestHandler = async (req, res, next) => {
     try {
         const { password, student: studentData } = req.body;
         // const zodParsedData = userValidation.userValidationSchema.parse(userData);

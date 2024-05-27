@@ -1,6 +1,5 @@
-import { Schema, model, connect } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import validator from 'validator';
-import bcrypt from "bcrypt";
 import {
   TGuardian,
   TLocalGuardian,
@@ -8,8 +7,6 @@ import {
   TStudent,
   StudentModel
 } from './student.interface';
-import { func } from 'joi';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -124,20 +121,6 @@ const studentSchema = new Schema<TStudent, StudentModel>({
 
 studentSchema.virtual("fullName").get(function () {
   return this.name.firstName + " " + this.name.middleName + " " + this.name.lastName;
-})
-
-// pre save middleware / hook : will work on create() save
-studentSchema.pre('save', async function (next) {
-  const user = this;
-  // hashing password and save into db 
-  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
-  next();
-
-})
-// post save middleware
-studentSchema.post("save", function (doc, next) {
-  doc.password = '';
-  next();
 })
 
 // query middleware 

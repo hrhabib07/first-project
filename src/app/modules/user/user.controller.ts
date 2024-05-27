@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { userServices } from "./user.service";
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { password, student: studentData } = req.body;
         // const zodParsedData = userValidation.userValidationSchema.parse(userData);
@@ -10,12 +10,8 @@ const createUser = async (req: Request, res: Response) => {
             message: 'Student is created successfully',
             data: result,
         });
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Something went wrong',
-            error: error,
-        });
+    } catch (error) {
+        next(error);
     }
 };
 export const userController = {

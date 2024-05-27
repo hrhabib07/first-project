@@ -1,9 +1,10 @@
-import express, { Application, NextFunction, Request, Response, application } from 'express';
+import express, { Application, Request, Response } from 'express';
 
 import cors from 'cors';
 import { StudentRoute } from './app/modules/student/student.route';
 import { UserRoute } from './app/modules/user/user.route';
-import globalErrorHandler from './app/middlewares/golbalErrorHandler';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
+import notFound from './app/middlewares/notFound';
 const app: Application = express();
 // parser
 app.use(express.json());
@@ -19,5 +20,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use(globalErrorHandler)
+app.use(notFound)
 
 export default app;

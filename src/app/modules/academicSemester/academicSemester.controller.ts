@@ -7,10 +7,10 @@ const catchAsync = (fn: RequestHandler) => {
         Promise.resolve(fn(req, res, next)).catch((error) => next(error))
     }
 }
-const createUser: RequestHandler = catchAsync(async (req, res, next) => {
-    const { password, student: studentData } = req.body;
-    // const zodParsedData = userValidation.userValidationSchema.parse(userData);
-    const result: any = await userServices.createUserIntoDB(password, studentData);
+const createAcademicSemester: RequestHandler = catchAsync(async (req, res, next) => {
+    // const { password, student: studentData } = req.body;
+    // // const zodParsedData = userValidation.userValidationSchema.parse(userData);
+    // const result = await userServices.createUserIntoDB(password, studentData);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -18,6 +18,6 @@ const createUser: RequestHandler = catchAsync(async (req, res, next) => {
         data: result
     })
 });
-export const userController = {
-    createUser
+export const AcademicSemesterController = {
+    createAcademicSemester
 }

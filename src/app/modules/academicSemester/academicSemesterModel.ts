@@ -1,39 +1,35 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { TAcademicSemester } from './academincSemester.interface';
+import mongoose, { Schema, Document, model } from 'mongoose';
+import { TAcademicSemester, TAcademicSemesterCode, TAcademicSemesterName, TMonths } from './academicSemester.interface';
+import { AcademicSemesterCode, AcademicSemesterName, Months } from './academicSemester.constant';
+
 
 // Create the schema
-const AcademicSemesterSchema = new Schema<TAcademicSemester>({
+const academicSemesterSchema = new Schema<TAcademicSemester>({
     name: {
         type: String,
-        enum: ['autumn', 'summer', 'fall'],
-        required: true,
-    },
-    code: {
-        type: String,
-        enum: ['01', '02', '03'],
+        enum: AcademicSemesterName,
         required: true,
     },
     year: {
         type: Date,
         required: true,
     },
+    code: {
+        type: String,
+        enum: AcademicSemesterCode,
+        required: true,
+    },
     startMonth: {
         type: String,
-        enum: [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ],
+        enum: Months,
         required: true,
     },
     endMonth: {
         type: String,
-        enum: [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ],
+        enum: Months,
         required: true,
     }
 });
 
 // Export the model
-export const AcademicSemesterModel = mongoose.model<TAcademicSemester>('AcademicSemester', AcademicSemesterSchema);
+export const AcademicSemesterModel = model<TAcademicSemester>('AcademicSemester', academicSemesterSchema);

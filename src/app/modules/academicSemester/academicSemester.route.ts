@@ -4,7 +4,8 @@ import validateRequest from '../../middlewares/validateRequest';
 import { academicSemesterValidation } from './academicSemester.validation';
 const router = express.Router();
 
-router.post('/create-academic-semester', validateRequest(academicSemesterValidation.createAcademicSemesterValidationSchema), AcademicSemesterController.createAcademicSemester); // will call controller function
-// router.get('/:studentId', StudentController.getSingleStudent); // will call controller function
-// router.delete('/:studentId', StudentController.deleteStudent)
+router.post('/create-academic-semester', validateRequest(academicSemesterValidation.createAcademicSemesterValidationSchema), AcademicSemesterController.createAcademicSemester);
+router.get('/', AcademicSemesterController.getAllAcademicSemester);
+router.get('/:semesterId', AcademicSemesterController.getSingleAcademicSemester);
+router.patch('/:semesterId', AcademicSemesterController.updateAcademicSemester)
 export const AcademicSemesterRoute = router;

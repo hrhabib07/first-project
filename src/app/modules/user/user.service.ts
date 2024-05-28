@@ -1,4 +1,5 @@
 
+import { any } from "joi";
 import config from "../../config";
 import { AcademicSemester } from "../academicSemester/academicSemesterModel";
 import { TStudent } from "../student/student.interface";
@@ -16,21 +17,14 @@ const createUserIntoDB = async (password: string, payload: TStudent) => {
 
     // set student role 
     userData.role = "student"
-    // set manually generated id 
-
-    // // find academic semester info 
-    // const admissionSemester = await AcademicSemesterModel.findById(payload.admissionSemester);
-    // userData.id = generateStudentId(admissionSemester);
-
 
     // find academic semester info
-    const admissionSemester = await AcademicSemester.findById(
+    const admissionSemester: any = await AcademicSemester.findById(
         payload.admissionSemester,
     );
 
     //set  generated id
     userData.id = await generateStudentId(admissionSemester);
-
 
 
 

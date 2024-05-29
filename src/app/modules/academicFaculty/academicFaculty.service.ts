@@ -3,6 +3,12 @@ import { academicFaculty } from "./academicFaculty.model";
 
 
 const createAcademicFacultyIntoDB = async (payload: TAcademicFaculty) => {
+    // Check for existing name (optional)
+    const existingUser = await academicFaculty.findOne({ name: payload.name });
+    if (existingUser) {
+        throw new Error('Name already exists!'); // Or create a custom Zod validation error
+    }
+
     const result = await academicFaculty.create(payload);
     return result;
 };
@@ -17,8 +23,13 @@ const getASingleAcademicFacultyFromDB = async (id: string) => {
     return result;
 }
 
-const updateAcademicFacultyIntoDB = async (id: string, data: object) => {
-    const result = await academicFaculty.updateOne({ _id: id }, { data })
+const updateAcademicFacultyIntoDB = async (id: string, data: TAcademicFaculty) => {
+    const existingUser = await academicFaculty.findOne({ name: data.name });
+    if (existingUser) {
+        throw new Error('Name already exists!'); // Or create a custom Zod validation error
+    }
+    const result = await academicFaculty.updateOne({ _id: id }, { data });
+    return result
 }
 
 export const academicFacultyService = {

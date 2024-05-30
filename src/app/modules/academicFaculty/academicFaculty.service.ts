@@ -28,8 +28,8 @@ const updateAcademicFacultyIntoDB = async (id: string, data: TAcademicFaculty) =
     if (existingUser) {
         throw new Error('Name already exists!'); // Or create a custom Zod validation error
     }
-    const result = await academicFaculty.updateOne({ _id: id }, { data });
-    return result
+    const result = await academicFaculty.updateOne({ _id: id }, data);
+    return result;
 }
 
 export const academicFacultyService = {

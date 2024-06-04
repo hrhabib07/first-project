@@ -20,4 +20,4 @@ academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
     next();
 });
 
-export const AcademicDepartment = model<TAcademicDepartment>("academic-department", academicDepartmentSchema);
+export const AcademicDepartment = model<TAcademicDepartment>("AcademicDepartment", academicDepartmentSchema);

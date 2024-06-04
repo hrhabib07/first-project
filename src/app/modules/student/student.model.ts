@@ -145,14 +145,14 @@ studentSchema.pre('aggregate', function (next) {
 })
 
 
-studentSchema.pre("findOneAndUpdate", async function (next) {
-  const query = this.getQuery();
-  const doesExist = await Student.findOne(query);
-  if (!doesExist) {
-    throw new AppError(httpStatus.NOT_FOUND, "Student does not exist");
-  }
-  next()
-})
+// studentSchema.pre("findOneAndUpdate", async function (next) {
+//   const query = this.getQuery();
+//   const doesExist = await Student.findOne(query);
+//   if (!doesExist) {
+//     throw new AppError(httpStatus.NOT_FOUND, "Student does not exist");
+//   }
+//   next()
+// })
 
 // creating a static method
 studentSchema.statics.isUserExist = async function (id: string) {

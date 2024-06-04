@@ -10,7 +10,7 @@ const router = Router();
 
 router.get('/', AcademicFacultyController.getAllAcademicFaculty);
 router.get('/:facultyId', AcademicFacultyController.getASingleAcademicFaculty);
-router.post('/create-faculty', validateRequest(AcademicFacultyValidation.createAcademicFacultyValidationSchema), AcademicFacultyController.createAcademicFaculty);
+router.post('/create-academic-faculty', validateRequest(AcademicFacultyValidation.createAcademicFacultyValidationSchema), AcademicFacultyController.createAcademicFaculty);
 router.patch('/:facultyId', validateRequest(AcademicFacultyValidation.updateAcademicFacultyValidationSchema), AcademicFacultyController.updateAcademicFaculty);
 
 export const AcademicFacultyRoute = router;

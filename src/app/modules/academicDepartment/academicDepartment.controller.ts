@@ -52,6 +52,10 @@ const updateAcademicDepartment: RequestHandler = catchAsync(async (req, res) => 
     })
 });
 
+
+
+
+
 export const academicDepartmentController = {
     createAcademicDepartment,
     getAllAcademicDepartment,

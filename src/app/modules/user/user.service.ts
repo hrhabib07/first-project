@@ -7,6 +7,8 @@ import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentId } from "./user.utils";
+import AppError from "../../errors/appError";
+import httpStatus from "http-status";
 
 const createUserIntoDB = async (password: string, payload: TStudent) => {
 
@@ -36,7 +38,7 @@ const createUserIntoDB = async (password: string, payload: TStudent) => {
         const newStudent = await Student.create(payload);
         return newStudent
     } else {
-        throw new Error("Failed to create user");
+        throw new AppError(httpStatus.NOT_FOUND, "Failed to create user");
     }
 };
 export const userServices = {

@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import AppError from "../../errors/appError";
 import { TAcademicDepartment } from "./academicDepartment.interface";
 import { AcademicDepartment } from "./academicDepartment.model"
 
@@ -5,7 +7,7 @@ const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
     // Check for existing name (optional)
     const existingUser = await AcademicDepartment.findOne({ name: payload.name });
     if (existingUser) {
-        throw new Error('Department Name already exists!'); // Or create a custom Zod validation error
+        throw new AppError(httpStatus.NOT_FOUND, 'Department Name already exists!'); // Or create a custom Zod validation error
     }
     const result = await AcademicDepartment.create(payload);
     return result;
@@ -25,7 +27,7 @@ const updateAcademicDepartmentIntoDB = async (id: string, payload: Partial<TAcad
     // Check for existing name (optional)
     const existingUser = await AcademicDepartment.findOne({ name: payload.name });
     if (existingUser) {
-        throw new Error('Department Name already exists!'); // Or create a custom Zod validation error
+        throw new AppError(httpStatus.NOT_FOUND, 'Department Name already exists!'); // Or create a custom Zod validation error
     }
     const result = await AcademicDepartment.findOneAndUpdate({ _id: id }, payload, { new: true });
     return result;

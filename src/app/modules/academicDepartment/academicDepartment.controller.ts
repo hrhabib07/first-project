@@ -15,7 +15,7 @@ const createAcademicDepartment: RequestHandler = catchAsync(async (req, res) => 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "academic semester created successfully",
+        message: "academic Department created successfully",
         data: result
     })
 });
@@ -25,14 +25,14 @@ const getAllAcademicDepartment: RequestHandler = catchAsync(async (req, res) => 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Academic faculties are retrieved successfully",
+        message: "Academic Departments are retrieved successfully",
         data: result
     })
 });
 
 const getASingleAcademicDepartment: RequestHandler = catchAsync(async (req, res) => {
-    const { DepartmentId } = req.params;
-    const result = await academicDepartmentService.getASingleAcademicDepartmentFromDB(DepartmentId);
+    const { departmentId } = req.params;
+    const result = await academicDepartmentService.getASingleAcademicDepartmentFromDB(departmentId);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -42,8 +42,8 @@ const getASingleAcademicDepartment: RequestHandler = catchAsync(async (req, res)
 });
 
 const updateAcademicDepartment: RequestHandler = catchAsync(async (req, res) => {
-    const { DepartmentId } = req.params;
-    const result = await academicDepartmentService.updateAcademicDepartmentIntoDB(DepartmentId, req.body);
+    const { departmentId } = req.params;
+    const result = await academicDepartmentService.updateAcademicDepartmentIntoDB(departmentId, req.body);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -52,7 +52,7 @@ const updateAcademicDepartment: RequestHandler = catchAsync(async (req, res) => 
     })
 });
 
-export const AcademicDepartmentController = {
+export const academicDepartmentController = {
     createAcademicDepartment,
     getAllAcademicDepartment,
     getASingleAcademicDepartment,

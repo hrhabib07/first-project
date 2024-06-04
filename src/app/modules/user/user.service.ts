@@ -9,6 +9,7 @@ import { User } from "./user.model";
 import { generateStudentId } from "./user.utils";
 import AppError from "../../errors/appError";
 import httpStatus from "http-status";
+import mongoose from "mongoose";
 
 const createUserIntoDB = async (password: string, payload: TStudent) => {
 
@@ -28,18 +29,32 @@ const createUserIntoDB = async (password: string, payload: TStudent) => {
     //set  generated id
     userData.id = await generateStudentId(admissionSemester);
 
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+        const newUser = await User.create([userData], { session });
+        if (!newUser.length) {
+            throw new AppError(httpStatus.NOT_FOUND, "Failed to create user");
+        }
 
-
-    const newUser = await User.create(userData); // build in static method 
-    // creating a user data 
-    if (Object.keys(newUser).length) {
-        payload.id = newUser.id;
-        payload.user = newUser._id;
-        const newStudent = await Student.create(payload);
+        payload.id = newUser[0].id;
+        payload.user = newUser[0]._id;
+        const newStudent = await Student.create([payload], { session });
+        if (!newStudent) {
+            throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student")
+        }
+        await session.commitTransaction();
+        await session.endSession();
         return newStudent
-    } else {
-        throw new AppError(httpStatus.NOT_FOUND, "Failed to create user");
+
+
+    } catch (error) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw new Error('Failed to create student');
     }
+
+
 };
 export const userServices = {
     createUserIntoDB

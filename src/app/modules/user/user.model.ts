@@ -2,6 +2,8 @@ import { Schema, model } from 'mongoose';
 import { TUser } from './user.interface';
 import bcrypt from "bcrypt";
 import config from '../../config';
+import httpStatus from 'http-status';
+import AppError from '../../errors/appError';
 const userSchema = new Schema<TUser>({
     id: {
         type: String,
@@ -41,7 +43,18 @@ userSchema.pre('save', async function (next) {
     user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
     next();
 
+});
+
+
+userSchema.pre("findOneAndUpdate", async function (next) {
+    const query = this.getQuery();
+    const doesExist = await User.findOne(query);
+    if (!doesExist) {
+        throw new AppError(httpStatus.NOT_FOUND, "Student does not exist");
+    }
+    next()
 })
+
 // set "" after saving the password
 userSchema.post("save", function (doc, next) {
     doc.password = '';

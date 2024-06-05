@@ -1,7 +1,7 @@
 import { ZodError, ZodIssue } from "zod";
-import { TErrorSource } from "../interface/erroreSource.interface";
+import { TErrorSource, TGenericResponse } from "../interface/error";
 
-const handleZodError = (error: ZodError) => {
+const handleZodError = (error: ZodError): TGenericResponse => {
     const statusCode = 400;
     const errorSources: TErrorSource = error.issues.map((issue: ZodIssue) => {
         return {

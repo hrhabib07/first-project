@@ -5,10 +5,10 @@ import { AcademicDepartment } from "./academicDepartment.model"
 
 const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
     // Check for existing name (optional)
-    const existingUser = await AcademicDepartment.findOne({ name: payload.name });
-    if (existingUser) {
-        throw new AppError(httpStatus.NOT_FOUND, 'Department Name already exists!'); // Or create a custom Zod validation error
-    }
+    // const existingUser = await AcademicDepartment.findOne({ name: payload.name });
+    // if (existingUser) {
+    //     throw new AppError(httpStatus.NOT_FOUND, 'Department Name already exists!'); // Or create a custom Zod validation error
+    // }
     const result = await AcademicDepartment.create(payload);
     return result;
 };

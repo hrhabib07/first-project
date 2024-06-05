@@ -1,8 +1,7 @@
-import { ZodError, ZodIssue } from "zod";
-import { TErrorSource } from "../interface/erroreSource.interface";
+import { TErrorSource, TGenericResponse } from "../interface/error";
 import mongoose from "mongoose";
 
-const handleValidationError = (error: mongoose.Error.ValidationError) => {
+const handleValidationError = (error: mongoose.Error.ValidationError): TGenericResponse => {
     const statusCode = 400;
     const errorSources: TErrorSource = Object.values(error.errors).map((val: any) => {
         return {

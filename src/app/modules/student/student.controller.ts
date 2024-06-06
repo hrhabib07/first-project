@@ -10,7 +10,8 @@ const catchAsync = (fn: RequestHandler) => {
 }
 
 const getAllStudents = catchAsync(async (req, res, next) => {
-  const result = await StudentServices.getAllStudentFromDB();
+
+  const result = await StudentServices.getAllStudentFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

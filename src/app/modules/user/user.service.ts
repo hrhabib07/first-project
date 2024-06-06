@@ -41,17 +41,17 @@ const createUserIntoDB = async (password: string, payload: TStudent) => {
         payload.user = newUser[0]._id;
         const newStudent = await Student.create([payload], { session });
         if (!newStudent) {
-            throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student")
+            throw new Error("Failed to create student")
         }
         await session.commitTransaction();
         await session.endSession();
         return newStudent
 
 
-    } catch (error) {
+    } catch (error: any) {
         await session.abortTransaction();
         await session.endSession();
-        throw new Error('Failed to create student');
+        throw new Error(error);
     }
 
 

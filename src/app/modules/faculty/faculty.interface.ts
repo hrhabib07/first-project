@@ -4,7 +4,7 @@ export type TFaculty = {
     id: string;
     designation: string;
     name: string;
-    dateOfBirth: Date;
+    dateOfBirth: String;
     gender: "male" | "female";
     email: string;
     contactNo: string;

@@ -1,17 +1,18 @@
 import { Router } from "express";
 import { facultyControllers } from "./faculty.controller";
+import validateRequest from "../../middlewares/validateRequest";
+import { facultyValidation } from "./faculty.validation";
 
 const router = Router();
 
-// cerate Faculty
-router.post("/", facultyControllers.createFaculty);
+
 // get all faculties
 router.get("/", facultyControllers.getAllFaculty);
 // get a single faculty
 router.get("/:facultyId", facultyControllers.getASingleFaculty);
 // update faculty
-router.patch("/:facultyId", facultyControllers.updateFaculty);
+router.patch("/:facultyId", validateRequest(facultyValidation.updateFacultyValidationSchema), facultyControllers.updateFaculty);
 // delete faculty
-router.patch("/:facultyId", facultyControllers.deleteFaculty);
+router.delete("/:facultyId", facultyControllers.deleteFaculty);
 
 export const facultyRoutes = router;

@@ -18,6 +18,19 @@ const createUser: RequestHandler = catchAsync(async (req, res, next) => {
         data: result
     })
 });
+// call the service function to create a new faculty
+const createFaculty = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { password, faculty: facultyData } = req.body;
+    const result = await userServices.createFacultyIntoDB(password, facultyData);
+    // send response using customized response
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "faculty has been created successfully",
+        data: result
+    })
+});
 export const userController = {
-    createUser
+    createUser,
+    createFaculty
 }

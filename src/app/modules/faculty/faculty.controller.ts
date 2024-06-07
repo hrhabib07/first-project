@@ -8,17 +8,7 @@ const catchAsync = (fn: RequestHandler) => {
         Promise.resolve(fn(req, res, next)).catch(error => next(error))
     }
 }
-// call the service function to create a new faculty
-const createFaculty = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const result = await facultyServices.createFacultyIntoDB(req.body);
-    // send response using customized response
-    sendResponse(res, {
-        success: true,
-        statusCode: httpStatus.OK,
-        message: "faculty has been created successfully",
-        data: result
-    })
-});
+
 // call the service to get all the faculty 
 const getAllFaculty = catchAsync(async (req, res, next) => {
     const result = await facultyServices.getAllFacultyFromDB();
@@ -69,7 +59,6 @@ const deleteFaculty = catchAsync(async (req, res, next) => {
 
 
 export const facultyControllers = {
-    createFaculty,
     getAllFaculty,
     getASingleFaculty,
     updateFaculty,

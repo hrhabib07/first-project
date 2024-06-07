@@ -1,10 +1,5 @@
 import { Faculty } from "./faculty.model";
 import { TFaculty } from "./faculty.interface";
-// create a single faculty into db
-const createFacultyIntoDB = async (payload: TFaculty) => {
-    const result = await Faculty.create(payload);
-    return result;
-};
 // get all the faculties from db
 const getAllFacultyFromDB = async () => {
     const result = await Faculty.find();
@@ -17,17 +12,16 @@ const getASingleFacultyFromDB = async (id: string) => {
 };
 // update a single faculty into db
 const updateASingleFacultyFromDB = async (id: string, payload: Partial<TFaculty>) => {
-    const result = await Faculty.findOneAndUpdate({ id }, payload);
+    const result = await Faculty.findOneAndUpdate({ id }, payload, { new: true });
     return result;
 };
 // delete a single faculty from db
 const deleteASingleFacultyFromDB = async (id: string) => {
-    const result = await Faculty.findOneAndUpdate({ id }, { isDeleted: true });
+    const result = await Faculty.findOneAndUpdate({ id }, { isDeleted: true }, { new: true });
     return result;
 }
 // export all teh function
 export const facultyServices = {
-    createFacultyIntoDB,
     getAllFacultyFromDB,
     getASingleFacultyFromDB,
     updateASingleFacultyFromDB,

@@ -15,7 +15,7 @@ const facultySchema = new Schema<TFaculty>({
     permanentAddress: { type: String, required: true },
     profileImage: { type: String, required: true },
     academicFaculty: { type: Schema.ObjectId, required: true },
-    isDeleted: { type: Boolean, required: true },
+    isDeleted: { type: Boolean, required: true, default: false },
 });
 
 export const Faculty = model<TFaculty>("Faculty", facultySchema);

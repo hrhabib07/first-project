@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 import { TFaculty } from "./faculty.interface";
 import { required } from "joi";
 
@@ -16,4 +16,6 @@ const facultySchema = new Schema<TFaculty>({
     profileImage: { type: String, required: true },
     academicFaculty: { type: Schema.ObjectId, required: true },
     isDeleted: { type: Boolean, required: true },
-})
+});
+
+export const Faculty = model<TFaculty>("Faculty", facultySchema);

@@ -1,0 +1,17 @@
+import { Types } from "mongoose";
+
+type TFaculty = {
+    id: string;
+    designation: string;
+    name: string;
+    dateOfBirth: Date;
+    gender: "male" | "female";
+    email: string;
+    contactNo: string;
+    emergencyContactNo: string;
+    presentAddress: string;
+    permanentAddress: string;
+    profileImage: string;
+    academicFaculty: Types.ObjectId;
+    isDeleted: boolean;
+}

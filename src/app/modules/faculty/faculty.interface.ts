@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-type TFaculty = {
+export type TFaculty = {
     id: string;
     designation: string;
     name: string;

@@ -55,8 +55,6 @@ export const generateFacultyId = async () => {
     incrementId = `F-${incrementId}`
     return incrementId;
 };
-
-
 const lastCreatedAdmin = async () => {
     const lastCreatedAdmin = await User.findOne(
         { role: "admin" },

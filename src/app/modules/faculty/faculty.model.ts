@@ -24,6 +24,10 @@ facultySchema.pre("find", function (next) {
     this.find({ isDeleted: { $ne: true } });
     next();
 });
+facultySchema.pre("findOne", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
 
 facultySchema.pre("findOneAndUpdate", function (next) {
     this.find({ isDeleted: { $ne: true } });

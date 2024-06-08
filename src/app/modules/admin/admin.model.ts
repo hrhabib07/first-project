@@ -53,19 +53,24 @@ const adminSchema = new Schema<TAdmin>({
         type: String,
         required: true
     },
-    idDeleted: {
+    isDeleted: {
         type: Boolean,
         default: false
     }
 }, { timestamps: true });
 
 adminSchema.pre("find", function (next) {
-    Admin.find({ isDeleted: { $ne: true } });
+    this.find({ isDeleted: { $ne: true } });
     next();
 });
+adminSchema.pre("findOne", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
 adminSchema.pre("findOneAndUpdate", function (next) {
-    Admin.find({ isDeleted: { $ne: true } });
+    this.find({ isDeleted: { $ne: true } });
     next();
-});
+})
 
 export const Admin = model<TAdmin>("Admin", adminSchema); 

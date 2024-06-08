@@ -11,5 +11,5 @@ type TAdmin = {
     permanentAddress: string;
     profileImage: string;
     managementDepartment: string;
-    idDeleted: boolean;
+    isDeleted: boolean;
 }

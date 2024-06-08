@@ -15,7 +15,7 @@ const createAdminValidationSchema = z.object({
             permanentAddress: z.string().nonempty(),
             profileImage: z.string().nonempty(),
             managementDepartment: z.string().nonempty(),
-            idDeleted: z.boolean().default(false)
+            isDeleted: z.boolean().default(false)
         })
     })
 })
@@ -34,7 +34,7 @@ const updateAdminValidationSchema = z.object({
             permanentAddress: z.string().nonempty().optional(),
             profileImage: z.string().nonempty().optional(),
             managementDepartment: z.string().nonempty().optional(),
-            idDeleted: z.boolean().optional()
+            isDeleted: z.boolean().optional()
         })
     })
 });

@@ -20,4 +20,14 @@ const facultySchema = new Schema<TFaculty>({
     timestamps: true
 });
 
+facultySchema.pre("find", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+facultySchema.pre("findOneAndUpdate", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+})
+
 export const Faculty = model<TFaculty>("Faculty", facultySchema);

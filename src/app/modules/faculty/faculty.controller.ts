@@ -35,7 +35,8 @@ const getASingleFaculty = catchAsync(async (req, res, next) => {
 // call the service to update faulty 
 const updateFaculty = catchAsync(async (req, res, next) => {
     const { facultyId } = req.params;
-    const result = await facultyServices.updateASingleFacultyFromDB(facultyId, req.body);
+    const { faculty } = req.body;
+    const result = await facultyServices.updateASingleFacultyFromDB(facultyId, faculty);
     // send response using customized response
     sendResponse(res, {
         success: true,

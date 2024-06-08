@@ -19,7 +19,7 @@ const createUser: RequestHandler = catchAsync(async (req, res, next) => {
     })
 });
 // call the service function to create a new faculty
-const createFaculty = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const createFaculty = catchAsync(async (req, res, next) => {
     const { password, faculty: facultyData } = req.body;
     const result = await userServices.createFacultyIntoDB(password, facultyData);
     // send response using customized response
@@ -30,7 +30,12 @@ const createFaculty = catchAsync(async (req: Request, res: Response, next: NextF
         data: result
     })
 });
+
+const createAdmin = catchAsync(async (req, res, next) => {
+    const { password, admin: adminData } = req.body;
+})
 export const userController = {
     createUser,
-    createFaculty
+    createFaculty,
+    createAdmin
 }

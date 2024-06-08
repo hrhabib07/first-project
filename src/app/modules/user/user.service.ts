@@ -82,6 +82,10 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     }
     return newFaculty;
 };
+
+const createAdminIntoDB = async (req: Request) => {
+    // const result = await 
+}
 export const userServices = {
     createUserIntoDB,
     createFacultyIntoDB

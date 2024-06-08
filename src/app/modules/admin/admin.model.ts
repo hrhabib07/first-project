@@ -57,7 +57,7 @@ const adminSchema = new Schema<TAdmin>({
         type: Boolean,
         default: false
     }
-});
+}, { timestamps: true });
 
 adminSchema.pre("find", function (next) {
     Admin.find({ isDeleted: { $ne: true } });

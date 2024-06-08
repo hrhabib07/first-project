@@ -6,12 +6,13 @@ import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
-import { generateFacultyId, generateStudentId } from "./user.utils";
+import { generateAdminId, generateFacultyId, generateStudentId } from "./user.utils";
 import AppError from "../../errors/appError";
 import httpStatus from "http-status";
 import mongoose from "mongoose";
 import { Faculty } from "../faculty/faculty.model";
 import { TFaculty } from "../faculty/faculty.interface";
+import { Admin } from "../admin/admin.model";
 
 const createUserIntoDB = async (password: string, payload: TStudent) => {
 
@@ -83,10 +84,24 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     return newFaculty;
 };
 
-const createAdminIntoDB = async (req: Request) => {
-    // const result = await 
+const createAdminIntoDB = async (password: string, payload: TAdmin) => {
+    const userData: Partial<TUser> = {};
+    userData.password = password || config.default_pass as string;
+    userData.role = "admin";
+    userData.id = await generateAdminId();
+    const newUser = await User.create(userData);
+    if (!newUser) {
+        throw new AppError(httpStatus.BAD_REQUEST, "failed to create user");
+    }
+    payload.id = userData.id;
+    const newAdmin = await Admin.create(payload);
+    if (!newAdmin) {
+        throw new AppError(httpStatus.BAD_REQUEST, "failed to create admin")
+    };
+    return newAdmin;
 }
 export const userServices = {
     createUserIntoDB,
-    createFacultyIntoDB
+    createFacultyIntoDB,
+    createAdminIntoDB
 }

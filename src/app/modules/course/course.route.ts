@@ -8,4 +8,5 @@ router.post("/create-course", validateRequest(courseValidation.createCourseValid
 router.get("/", courseController.getAllCourses);
 router.get("/:id", courseController.getSingleCourse);
 router.delete("/:id", courseController.deleteCourse);
+router.patch("/:id", courseController.updateCourse);
 export const CourseRoutes = router;

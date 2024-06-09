@@ -1,9 +1,20 @@
-import { Router } from "express";
-import { adminControllers } from "./admin.controller";
+import express from 'express';
+import validateRequest from '../../middlewares/validateRequest';
+import { AdminControllers } from './admin.controller';
+import { updateAdminValidationSchema } from './admin.validation';
 
-const router = Router();
-router.get("/", adminControllers.getAllAdmin);
-router.get("/:adminId", adminControllers.getASingleAdmin);
-router.patch("/:adminId", adminControllers.updateAdmin);
-router.delete("/:adminId", adminControllers.deleteAdmin);
-export const adminRoutes = router;
+const router = express.Router();
+
+router.get('/', AdminControllers.getAllAdmins);
+
+router.get('/:id', AdminControllers.getSingleAdmin);
+
+router.patch(
+    '/:id',
+    validateRequest(updateAdminValidationSchema),
+    AdminControllers.updateAdmin,
+);
+
+router.delete('/:adminId', AdminControllers.deleteAdmin);
+
+export const AdminRoutes = router;

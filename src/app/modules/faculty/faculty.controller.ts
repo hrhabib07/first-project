@@ -1,67 +1,59 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
-import { facultyServices } from "./faculty.services";
-import sendResponse from "../../utils/sendResponse";
-import httpStatus from "http-status";
-// to demolish the try catch in every function
-const catchAsync = (fn: RequestHandler) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        Promise.resolve(fn(req, res, next)).catch(error => next(error))
-    }
-}
+import httpStatus from 'http-status';
+import sendResponse from '../../utils/sendResponse';
+import { catchAsync } from '../../utils/catchAsync';
+import { FacultyServices } from './faculty.services';
 
-// call the service to get all the faculty 
-const getAllFaculty = catchAsync(async (req, res, next) => {
-    const result = await facultyServices.getAllFacultyFromDB();
-    // send response using customized response
+const getSingleFaculty = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await FacultyServices.getSingleFacultyFromDB(id);
+
     sendResponse(res, {
-        success: true,
         statusCode: httpStatus.OK,
-        message: "faculties has been retrieved successfully",
-        data: result
+        success: true,
+        message: 'Faculty is retrieved successfully',
+        data: result,
     });
 });
-// call the service to get a single faculty 
-const getASingleFaculty = catchAsync(async (req, res, next) => {
-    const { facultyId } = req.params;
-    const result = await facultyServices.getASingleFacultyFromDB(facultyId);
-    // send response using customized response
+
+const getAllFaculties = catchAsync(async (req, res) => {
+    const result = await FacultyServices.getAllFacultiesFromDB(req.query);
+
     sendResponse(res, {
-        success: true,
         statusCode: httpStatus.OK,
-        message: "faculty has been retrieved successfully",
-        data: result
+        success: true,
+        message: 'Faculties are retrieved successfully',
+        data: result,
     });
 });
-// call the service to update faulty 
-const updateFaculty = catchAsync(async (req, res, next) => {
-    const { facultyId } = req.params;
+
+const updateFaculty = catchAsync(async (req, res) => {
+    const { id } = req.params;
     const { faculty } = req.body;
-    const result = await facultyServices.updateASingleFacultyFromDB(facultyId, faculty);
-    // send response using customized response
+    const result = await FacultyServices.updateFacultyIntoDB(id, faculty);
+
     sendResponse(res, {
-        success: true,
         statusCode: httpStatus.OK,
-        message: "faculty has been updated successfully",
-        data: result
-    });
-});
-// call the service to delete faulty 
-const deleteFaculty = catchAsync(async (req, res, next) => {
-    const { facultyId } = req.params;
-    const result = await facultyServices.deleteASingleFacultyFromDB(facultyId);
-    // send response using customized response
-    sendResponse(res, {
         success: true,
-        statusCode: httpStatus.OK,
-        message: "faculty has been deleted successfully",
-        data: result
+        message: 'Faculty is updated successfully',
+        data: result,
     });
 });
 
+const deleteFaculty = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await FacultyServices.deleteFacultyFromDB(id);
 
-export const facultyControllers = {
-    getAllFaculty,
-    getASingleFaculty,
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Faculty is deleted successfully',
+        data: result,
+    });
+});
+
+export const FacultyControllers = {
+    getAllFaculties,
+    getSingleFaculty,
+    deleteFaculty,
     updateFaculty,
-    deleteFaculty
-}
+};

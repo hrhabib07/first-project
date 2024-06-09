@@ -1,51 +1,97 @@
-import { Faculty } from "./faculty.model";
-import { TFaculty } from "./faculty.interface";
-import mongoose from "mongoose";
-import AppError from "../../errors/appError";
-import httpStatus from "http-status";
-import { User } from "../user/user.model";
-// get all the faculties from db
-const getAllFacultyFromDB = async () => {
+import httpStatus from 'http-status';
+import mongoose from 'mongoose';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { Faculty } from './faculty.model';
+import { FacultySearchableFields } from './facultyConstant';
+import { TFaculty } from './faculty.interface';
+import AppError from '../../errors/appError';
+import { User } from '../user/user.model';
 
-    const result = await Faculty.find();
+
+const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
+    const facultyQuery = new QueryBuilder(
+        Faculty.find().populate('academicDepartment'),
+        query,
+    )
+        .search(FacultySearchableFields)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+
+    const result = await facultyQuery.modelQuery;
     return result;
 };
-//get a single faculty from db
-const getASingleFacultyFromDB = async (id: string) => {
-    const result = await Faculty.find({ id });
+
+const getSingleFacultyFromDB = async (id: string) => {
+    const result = await Faculty.findById(id).populate('academicDepartment');
+
     return result;
 };
-// update a single faculty into db
-const updateASingleFacultyFromDB = async (id: string, payload: Partial<TFaculty>) => {
-    const result = await Faculty.findOneAndUpdate({ id }, payload, { new: true });
+
+const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
+    const { name, ...remainingFacultyData } = payload;
+
+    const modifiedUpdatedData: Record<string, unknown> = {
+        ...remainingFacultyData,
+    };
+
+    if (name && Object.keys(name).length) {
+        for (const [key, value] of Object.entries(name)) {
+            modifiedUpdatedData[`name.${key}`] = value;
+        }
+    }
+
+    const result = await Faculty.findByIdAndUpdate(id, modifiedUpdatedData, {
+        new: true,
+        runValidators: true,
+    });
     return result;
 };
-// delete a single faculty from db
-const deleteASingleFacultyFromDB = async (id: string) => {
+
+const deleteFacultyFromDB = async (id: string) => {
     const session = await mongoose.startSession();
+
     try {
         session.startTransaction();
-        const deleteUser = await User.findOneAndUpdate({ id }, { isDeleted: true }, { new: true });
-        if (!deleteUser) {
-            throw new AppError(httpStatus.BAD_REQUEST, "failed to delete user")
-        };
-        const deleteFaculty = await Faculty.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
-        if (!deleteFaculty) {
-            throw new AppError(httpStatus.BAD_REQUEST, "failed to delete faculty")
-        };
-        (await session).commitTransaction();
-        (await session).endSession();
-        return deleteFaculty;
-    } catch (error) {
-        (await session).abortTransaction();
-        (await session).endSession();
-        throw new AppError(httpStatus.BAD_REQUEST, "No faculty found")
+
+        const deletedFaculty = await Faculty.findByIdAndUpdate(
+            id,
+            { isDeleted: true },
+            { new: true, session },
+        );
+
+        if (!deletedFaculty) {
+            throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete faculty');
+        }
+
+        // get user _id from deletedFaculty
+        const userId = deletedFaculty.user;
+
+        const deletedUser = await User.findByIdAndUpdate(
+            userId,
+            { isDeleted: true },
+            { new: true, session },
+        );
+
+        if (!deletedUser) {
+            throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
+        }
+
+        await session.commitTransaction();
+        await session.endSession();
+
+        return deletedFaculty;
+    } catch (err: any) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw new Error(err);
     }
-}
-// export all teh function
-export const facultyServices = {
-    getAllFacultyFromDB,
-    getASingleFacultyFromDB,
-    updateASingleFacultyFromDB,
-    deleteASingleFacultyFromDB
-}
+};
+
+export const FacultyServices = {
+    getAllFacultiesFromDB,
+    getSingleFacultyFromDB,
+    updateFacultyIntoDB,
+    deleteFacultyFromDB,
+};

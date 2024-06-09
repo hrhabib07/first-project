@@ -1,47 +1,64 @@
-import { z } from "zod";
+import { z } from 'zod';
+import { BloodGroup, Gender } from './facultyConstant';
 
-const createFacultyValidationSchema = z.object({
-    body: z.object({
-        faculty: z.object({
-            id: z.string().nonempty(),
-            designation: z.string().nonempty(),
-            name: z.string().nonempty(),
-            dateOfBirth: z.string(),
-            gender: z.enum(["male", "female"]),
-            email: z.string().email(),
-            contactNo: z.string().nonempty(),
-            emergencyContactNo: z.string().nonempty(),
-            presentAddress: z.string().nonempty(),
-            permanentAddress: z.string().nonempty(),
-            profileImage: z.string().url(),
-            academicFaculty: z.string().nonempty(), // Assuming ObjectId is represented as a string
-            isDeleted: z.boolean()
-        })
-    })
+const createUserNameValidationSchema = z.object({
+    firstName: z
+        .string()
+        .min(1)
+        .max(20)
+        .refine((value) => /^[A-Z]/.test(value), {
+            message: 'First Name must start with a capital letter',
+        }),
+    middleName: z.string(),
+    lastName: z.string(),
 });
 
-const updateFacultyValidationSchema = z.object({
+export const createFacultyValidationSchema = z.object({
     body: z.object({
+        password: z.string().max(20),
         faculty: z.object({
-            id: z.string().nonempty().optional(),
-            designation: z.string().nonempty().optional(),
-            name: z.string().nonempty().optional(),
+            designation: z.string(),
+            name: createUserNameValidationSchema,
+            gender: z.enum([...Gender] as [string, ...string[]]),
             dateOfBirth: z.string().optional(),
-            gender: z.enum(["male", "female"]).optional(),
-            email: z.string().email().optional(),
-            contactNo: z.string().nonempty().optional(),
-            emergencyContactNo: z.string().nonempty().optional(),
-            presentAddress: z.string().nonempty().optional(),
-            permanentAddress: z.string().nonempty().optional(),
-            profileImage: z.string().url().optional(),
-            academicFaculty: z.string().nonempty().optional(), // Assuming ObjectId is represented as a string
-            isDeleted: z.boolean().optional()
-        })
-    })
+            email: z.string().email(),
+            contactNo: z.string(),
+            emergencyContactNo: z.string(),
+            bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]),
+            presentAddress: z.string(),
+            permanentAddress: z.string(),
+            academicDepartment: z.string(),
+            profileImg: z.string(),
+        }),
+    }),
 });
 
+const updateUserNameValidationSchema = z.object({
+    firstName: z.string().min(1).max(20).optional(),
+    middleName: z.string().optional(),
+    lastName: z.string().optional(),
+});
 
-export const facultyValidation = {
+export const updateFacultyValidationSchema = z.object({
+    body: z.object({
+        faculty: z.object({
+            designation: z.string().optional(),
+            name: updateUserNameValidationSchema,
+            gender: z.enum([...Gender] as [string, ...string[]]).optional(),
+            dateOfBirth: z.string().optional(),
+            email: z.string().email().optional(),
+            contactNo: z.string().optional(),
+            emergencyContactNo: z.string().optional(),
+            bloodGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
+            presentAddress: z.string().optional(),
+            permanentAddress: z.string().optional(),
+            profileImg: z.string().optional(),
+            academicDepartment: z.string().optional(),
+        }),
+    }),
+});
+
+export const studentValidations = {
     createFacultyValidationSchema,
-    updateFacultyValidationSchema
-}
+    updateFacultyValidationSchema,
+};

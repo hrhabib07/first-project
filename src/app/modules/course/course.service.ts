@@ -63,6 +63,7 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
 const assignCourseFacultiesWithCourseIntoDB = async (id: string, payload: Partial<TCourseFaculty>) => {
 
     const result = await CourseFaculty.findByIdAndUpdate(id, {
+        course: id,
         $addToSet: { faculties: { $each: payload } }
     }, { new: true, upsert: true });
     return result;

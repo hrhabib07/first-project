@@ -5,7 +5,7 @@ import { SemesterRegistrationValidation } from "./semesterRegistration.validatio
 
 const router = Router();
 router.post("/create-semester", validateRequest(SemesterRegistrationValidation.createSemesterRegistrationValidationSchema), SemesterRegistrationController.createSemesterRegistration);
-router.patch("/update-semester", validateRequest(SemesterRegistrationValidation.updateSemesterRegistrationValidationSchema), SemesterRegistrationController.updateSemesterRegistration);
+router.patch("/:id", validateRequest(SemesterRegistrationValidation.updateSemesterRegistrationValidationSchema), SemesterRegistrationController.updateSemesterRegistration);
 router.get("/", SemesterRegistrationController.getAllSemesterRegistration);
 router.get("/:id", SemesterRegistrationController.getSingleSemesterRegistration);
 

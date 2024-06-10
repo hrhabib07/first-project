@@ -4,6 +4,7 @@ import { AcademicSemester } from "../academicSemester/academicSemesterModel";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
 import { SemesterRegistration } from "./semesterRegistration.model";
 import QueryBuilder from "../../builder/QueryBuilder";
+import { RegistrationStatus } from "./semesterRegistration.constant";
 
 const createSemesterRegistrationIntoDB = async (payload: TSemesterRegistration) => {
     const academicSemesterID = payload.academicSemester;
@@ -42,11 +43,18 @@ const updateSemesterRegistrationIntoDB = async (id: string, payload: Partial<TSe
         throw new AppError(httpStatus.NOT_FOUND, "Requested semester not fount!")
     };
     const currentSemesterStatus = isSemesterRegistrationExist.status;
-    if (currentSemesterStatus === "ENDED") {
+    const requestedStatus = payload?.status;
+    if (currentSemesterStatus === RegistrationStatus.ENDED) {
         throw new AppError(httpStatus.BAD_REQUEST, "Requested semester is already ENDED!")
+    };
+    if (currentSemesterStatus === RegistrationStatus.UPCOMING && requestedStatus === RegistrationStatus.ENDED) {
+        throw new AppError(httpStatus.BAD_REQUEST, `You can not directly change the status from ${currentSemesterStatus} to ${requestedStatus}`);
     }
-    // const result = await SemesterRegistration.findById(id).populate("academicSemester");
-    // return result;
+    if (currentSemesterStatus === RegistrationStatus.ONGOING && requestedStatus === RegistrationStatus.UPCOMING) {
+        throw new AppError(httpStatus.BAD_REQUEST, `You can not directly change the status from ${currentSemesterStatus} to ${requestedStatus}`);
+    }
+    const result = await SemesterRegistration.findByIdAndUpdate(id, payload, { new: true, runValidators: true })
+    return result;
 };
 
 export const SemesterRegistrationServices = {

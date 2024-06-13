@@ -1,4 +1,7 @@
-export type TUser = {
+import { promises } from "dns";
+import { Model } from "mongoose";
+
+export interface TUser {
     id: string;
     password: string;
     needsPasswordChange: boolean;
@@ -6,9 +9,8 @@ export type TUser = {
     status: "in-progress" | "blocked";
     isDeleted: boolean
 };
-
-export type NewUser = {
-    password: string;
-    role: string;
-    id: string
+export interface UserModel extends Model<TUser> {
+    // myStaticMethod(): number;
+    isUserExistByCustomId(id: string): Promise<TUser>;
+    isPasswordMatched(plainPassword: string, hashedPassword: string): Promise<boolean>;
 }

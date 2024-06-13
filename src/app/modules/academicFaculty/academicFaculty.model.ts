@@ -10,7 +10,7 @@ const academicFacultySchema = new Schema<TAcademicFaculty>({
 
 academicFacultySchema.pre("updateOne", async function (next) {
     const query = this.getQuery();
-    const existingFaculty = await academicFaculty.findOne(query);
+    const existingFaculty = await AcademicFaculty.findOne(query);
     if (!existingFaculty) {
         throw new AppError(httpStatus.NOT_FOUND, "faculty does not exist")
     };
@@ -18,4 +18,4 @@ academicFacultySchema.pre("updateOne", async function (next) {
 })
 
 
-export const academicFaculty = model<TAcademicFaculty>('AcademicFaculty', academicFacultySchema);
+export const AcademicFaculty = model<TAcademicFaculty>('AcademicFaculty', academicFacultySchema);

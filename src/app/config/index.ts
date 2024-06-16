@@ -10,5 +10,6 @@ export default {
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
   default_pass: process.env.DEFAULT_PASS,
   jwt_access_secret: process.env.JWT_ACCESS_SECRET,
-  reset_password_ui_link: process.env.RESET_PASSWORD_UI_LINK
+  reset_password_ui_link: process.env.RESET_PASSWORD_UI_LINK,
+  google_smtp_auth_pass: process.env.GOOGLE_SMTP_AUTH_PASS
 };

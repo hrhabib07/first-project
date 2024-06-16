@@ -6,7 +6,13 @@ const loginValidationSchema = z.object({
         password: z.string({ required_error: "password is required" })
     })
 });
+const resetPasswordValidationSchema = z.object({
+    body: z.object({
+        id: z.string({ required_error: "id is required" })
+    })
+});
 
 export const AuthValidation = {
-    loginValidationSchema
+    loginValidationSchema,
+    resetPasswordValidationSchema
 }

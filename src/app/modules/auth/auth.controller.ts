@@ -15,6 +15,18 @@ const loginUser = catchAsync(async (req, res, next) => {
     })
 });
 
+const resetPassword = catchAsync(async (req, res, next) => {
+    const result = await AuthServices.resetPassword(req.body.id);
+    // console.log(req.body);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "reset password link generated  successfully",
+        data: result
+    })
+});
+
 export const AuthControllers = {
-    loginUser
+    loginUser,
+    resetPassword
 } 

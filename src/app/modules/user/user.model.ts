@@ -12,7 +12,8 @@ const userSchema = new Schema<TUser, UserModel>({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: 0
     },
     needsPasswordChange: {
         type: Boolean,
@@ -48,7 +49,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre("findOneAndUpdate", async function (next) {
     const query = this.getQuery();
-    const doesExist = await User.findOne(query);
+    const doesExist = await User.findOne(query).select("+password");
     if (!doesExist) {
         throw new AppError(httpStatus.NOT_FOUND, "Student does not exist");
     }

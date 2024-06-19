@@ -40,9 +40,21 @@ const createAdmin = catchAsync(async (req, res, next) => {
         message: "admin has created successfully",
         data: result
     })
-})
+});
+
+const changeStatus = catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const result = await userServices.changeUserStatusIntoDB(id, req.body);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "admin has created successfully",
+        data: result
+    })
+});
 export const userController = {
     createUser,
     createFaculty,
-    createAdmin
+    createAdmin,
+    changeStatus
 }

@@ -172,8 +172,15 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
         throw new Error(err);
     }
 };
+
+const changeUserStatusIntoDB = async (id: string, payload: { status: string }) => {
+    const result = await User.findByIdAndUpdate(id, payload, { new: true });
+    return result;
+}
+
 export const userServices = {
     createUserIntoDB,
     createFacultyIntoDB,
-    createAdminIntoDB
+    createAdminIntoDB,
+    changeUserStatusIntoDB
 }

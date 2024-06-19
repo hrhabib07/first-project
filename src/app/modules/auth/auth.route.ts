@@ -5,6 +5,9 @@ import { AuthControllers } from "./auth.controller";
 
 const router = Router();
 router.post("/login", validateRequest(AuthValidation.loginValidationSchema), AuthControllers.loginUser);
+router.post("/forget-password", validateRequest(AuthValidation.forgetPasswordValidationSchema),
+    AuthControllers.forgetPassword
+);
 router.post("/reset-password", validateRequest(AuthValidation.resetPasswordValidationSchema),
     AuthControllers.resetPassword
 );

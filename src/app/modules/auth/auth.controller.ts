@@ -5,7 +5,7 @@ import { AuthServices } from "./auth.service";
 import { request } from "http";
 
 const loginUser = catchAsync(async (req, res, next) => {
-    const result = await AuthServices.loginUser(req.body);
+    const result = await AuthServices.loginUserService(req.body);
     // console.log(req.body);
     sendResponse(res, {
         success: true,
@@ -37,9 +37,21 @@ const resetPassword = catchAsync(async (req, res) => {
         data: result
     })
 })
+const getMe = catchAsync(async (req, res) => {
+    const { id, role } = req.user;
+    const result = await AuthServices.getMeService(id, role);
+    // console.log(req.body);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "user data retrieved",
+        data: result
+    })
+})
 
 export const AuthControllers = {
     loginUser,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    getMe
 } 

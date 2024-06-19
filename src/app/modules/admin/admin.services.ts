@@ -84,6 +84,8 @@ const deleteAdminFromDB = async (id: string) => {
     }
 };
 
+
+
 export const AdminServices = {
     getAllAdminsFromDB,
     getSingleAdminFromDB,

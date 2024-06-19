@@ -6,12 +6,16 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 import config from "../../config";
 import { sendEmail } from "../../utils/sendEmail";
 import bcrypt from "bcrypt";
+import { Student } from "../student/student.model";
+import { Admin } from "../admin/admin.model";
+import { Faculty } from "../faculty/faculty.model";
 
-const loginUser = async (payload: TLoginUser) => {
+const loginUserService = async (payload: TLoginUser) => {
 
 
     // check if the user exist 
     const user = await User.isUserExistByCustomId(payload.id);
+
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "this user does not exist");
     }
@@ -40,8 +44,7 @@ const loginUser = async (payload: TLoginUser) => {
     return {
         accessToken,
         needsPasswordChange: user.needsPasswordChange
-    }
-
+    };
 };
 
 const forgetPasswordServices = async (userId: string) => {
@@ -107,8 +110,21 @@ const resetPassword = async (id: string, newPassword: string, accessToken: strin
 
 }
 
+const getMeService = async (id: string, role: string) => {
+    let result = null;
+    if (role === "student") {
+        result = await Student.findOne({ id });
+    } else if (role === "admin") {
+        result = await Admin.findOne({ id });
+    } else if (role === "faculty") {
+        result = await Faculty.findOne({ id });
+    }
+    return result;
+}
+
 export const AuthServices = {
-    loginUser,
+    loginUserService,
     forgetPasswordServices,
-    resetPassword
+    resetPassword,
+    getMeService
 };

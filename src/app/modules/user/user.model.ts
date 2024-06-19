@@ -1,78 +1,82 @@
+import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
-import { TUser, UserModel } from './user.interface';
-import bcrypt from "bcrypt";
 import config from '../../config';
-import httpStatus from 'http-status';
-import AppError from '../../errors/appError';
-const userSchema = new Schema<TUser, UserModel>({
-    id: {
-        type: String,
-        required: true,
-        unique: true
+import { TUser, UserModel } from './user.interface';
+const userSchema = new Schema<TUser, UserModel>(
+    {
+        id: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        password: {
+            type: String,
+            required: true,
+            select: 0,
+        },
+        needsPasswordChange: {
+            type: Boolean,
+            default: true,
+        },
+        passwordChangedAt: {
+            type: Date,
+        },
+        role: {
+            type: String,
+            enum: ['student', 'faculty', 'admin'],
+        },
+        status: {
+            type: String,
+            enum: ['in-progress', 'blocked'],
+            default: 'in-progress',
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false,
+        },
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true
+    {
+        timestamps: true,
     },
-    password: {
-        type: String,
-        required: true,
-        select: 0
-    },
-    needsPasswordChange: {
-        type: Boolean,
-        default: true
-    },
-    role: {
-        type: String,
-        enum: ["student", "admin", "faculty"]
-    },
-    status: {
-        type: String,
-        enum: ["in-progress", "blocked"],
-        default: 'in-progress'
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
-}, {
-    timestamps: true,
-})
+);
 
-
-// pre save middleware / hook : will work on create() save
 userSchema.pre('save', async function (next) {
-    const user = this;
-    // hashing password and save into db 
-    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
-    next();
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const user = this; // doc
+    // hashing password and save into DB
 
+    user.password = await bcrypt.hash(
+        user.password,
+        Number(config.bcrypt_salt_rounds),
+    );
+
+    next();
 });
 
-
-userSchema.pre("findOneAndUpdate", async function (next) {
-    const query = this.getQuery();
-    const doesExist = await User.findOne(query).select("+password");
-    if (!doesExist) {
-        throw new AppError(httpStatus.NOT_FOUND, "Student does not exist");
-    }
-    next()
-})
-
-// set "" after saving the password
-userSchema.post("save", function (doc, next) {
+// set '' after saving password
+userSchema.post('save', function (doc, next) {
     doc.password = '';
     next();
-})
+});
 
-userSchema.statics.isUserExistByCustomId = async function (id: string) {
-    return await User.findOne({ id }).select("+password")
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+    return await User.findOne({ id }).select('+password');
 };
 
-userSchema.statics.isPasswordMatched = async function (plainPassword: string, hashedPassword: string) {
-    return await bcrypt.compare(plainPassword, hashedPassword);
-}
+userSchema.statics.isPasswordMatched = async function (
+    plainTextPassword,
+    hashedPassword,
+) {
+    return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+    passwordChangedTimestamp: Date,
+    jwtIssuedTimestamp: number,
+) {
+    const passwordChangedTime =
+        new Date(passwordChangedTimestamp).getTime() / 1000;
+    return passwordChangedTime > jwtIssuedTimestamp;
+};
 
 export const User = model<TUser, UserModel>('User', userSchema);

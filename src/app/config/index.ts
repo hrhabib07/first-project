@@ -11,5 +11,8 @@ export default {
   default_pass: process.env.DEFAULT_PASS,
   jwt_access_secret: process.env.JWT_ACCESS_SECRET,
   reset_password_ui_link: process.env.RESET_PASSWORD_UI_LINK,
-  google_smtp_auth_pass: process.env.GOOGLE_SMTP_AUTH_PASS
+  google_smtp_auth_pass: process.env.GOOGLE_SMTP_AUTH_PASS,
+  cloudinary_secret: process.env.CLOUDINARY_SECRET,
+  cloudinary_url: process.env.CLOUDINARY_URL
+
 };

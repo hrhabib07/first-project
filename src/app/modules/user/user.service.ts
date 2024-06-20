@@ -11,10 +11,10 @@ import mongoose from "mongoose";
 import { Faculty } from "../faculty/faculty.model";
 import { TFaculty } from "../faculty/faculty.interface";
 import { Admin } from "../admin/admin.model";
-import { TAdmin } from "../admin/admin.interface";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
+import { sendImgToCloudinary } from "../../utils/sendImgToCloudinary";
 
-const createUserIntoDB = async (password: string, payload: TStudent) => {
+const createUserIntoDB = async (password: string, payload: TStudent, file: any) => {
 
     // create a user object 
     const userData: Partial<TUser> = {};
@@ -27,15 +27,22 @@ const createUserIntoDB = async (password: string, payload: TStudent) => {
     // set student role 
     userData.role = "student"
 
+
     // find academic semester info
-    const admissionSemester: any = await AcademicSemester.findById(
-        payload.admissionSemester,
-    );
+    const admissionSemester: any = await AcademicSemester.findById(payload.admissionSemester);
+
+
+    if (!admissionSemester) {
+        throw new AppError(httpStatus.NOT_FOUND, "Admission semester is not valid");
+    }
 
     //set  generated id
     userData.id = await generateStudentId(admissionSemester);
 
-
+    const path = file.path;
+    const imgName = `${userData.id}${payload.name.firstName}`
+    const profileImg = await sendImgToCloudinary(path, imgName);
+    payload.profileImg = profileImg;
 
     const session = await mongoose.startSession();
     try {

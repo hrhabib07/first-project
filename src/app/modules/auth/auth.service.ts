@@ -14,7 +14,7 @@ const loginUserService = async (payload: TLoginUser) => {
 
 
     // check if the user exist 
-    const user = await User.isUserExistByCustomId(payload.id);
+    const user = await User.isUserExistsByCustomId(payload.id);
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "this user does not exist");
@@ -49,7 +49,7 @@ const loginUserService = async (payload: TLoginUser) => {
 
 const forgetPasswordServices = async (userId: string) => {
     // check if the user exist 
-    const user = await User.isUserExistByCustomId(userId);
+    const user = await User.isUserExistsByCustomId(userId);
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "this user does not exist");
     }
@@ -79,7 +79,7 @@ const forgetPasswordServices = async (userId: string) => {
 
 const resetPassword = async (id: string, newPassword: string, accessToken: string) => {
     // check if the user exist 
-    const user = await User.isUserExistByCustomId(id);
+    const user = await User.isUserExistsByCustomId(id);
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "this user does not exist");
     }

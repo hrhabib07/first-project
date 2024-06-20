@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { userServices } from "./user.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
+import { sendImgToCloudinary } from "../../utils/sendImgToCloudinary";
 const catchAsync = (fn: RequestHandler) => {
     return (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(fn(req, res, next)).catch((error) => next(error))
@@ -10,7 +11,9 @@ const catchAsync = (fn: RequestHandler) => {
 const createUser: RequestHandler = catchAsync(async (req, res, next) => {
     const { password, student: studentData } = req.body;
     // const zodParsedData = userValidation.userValidationSchema.parse(userData);
-    const result: any = await userServices.createUserIntoDB(password, studentData);
+
+
+    const result: any = await userServices.createUserIntoDB(password, studentData, req.file);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
